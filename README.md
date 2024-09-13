@@ -138,3 +138,32 @@ If you need to restart multiple services, simply modify the `deploy.sh` script t
 - **Service not restarting**: Ensure your service is correctly configured with `systemctl` and that the path to the service file is correct in the `deploy.sh` script.
 
 Now your setup is complete! Every time you push to `master`, GitHub Actions will trigger the deployment, pull the latest changes from your GitHub repo, and restart your service on the DigitalOcean droplet.
+
+### Systemd configuration
+``` 
+[Unit]
+# describe the app
+Description=My App
+# start the app after the network is available
+After=network.target
+
+[Service]
+# usually you'll use 'simple'
+# one of https://www.freedesktop.org/software/systemd/man/systemd.service.html#Type=
+Type=simple
+# which user to use when starting the app
+User=root
+# path to your application's root directory
+WorkingDirectory=/root/digital-ocean-github-actions-ci
+# the command to start the app
+# requires absolute paths
+ExecStart=/root/.bun/bin/bun run src/index.ts
+# restart policy
+# one of {no|on-success|on-failure|on-abnormal|on-watchdog|on-abort|always}
+Restart=always
+
+[Install]
+# start the app automatically
+WantedBy=multi-user.target
+
+```
