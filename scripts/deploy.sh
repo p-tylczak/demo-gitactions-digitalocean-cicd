@@ -1,5 +1,4 @@
 #!/bin/bash
-;; todo fix
-cd /path/to/your/repo
+cd /root/digital-ocean-github-actions-ci
 git pull origin master
 sudo systemctl restart digital-ocean-github-actions-ci
