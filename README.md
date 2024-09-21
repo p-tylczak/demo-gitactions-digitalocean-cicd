@@ -140,7 +140,7 @@ If you need to restart multiple services, simply modify the `deploy.sh` script t
 Now your setup is complete! Every time you push to `master`, GitHub Actions will trigger the deployment, pull the latest changes from your GitHub repo, and restart your service on the DigitalOcean droplet.
 
 ### Systemd configuration
-Should be located in `/usr/lib/systemd/system/digital-ocean-github-actions-ci`:
+Should be located in `/usr/lib/systemd/system/digital-ocean-github-actions-ci.service`:
 ``` 
 [Unit]
 # describe the app
