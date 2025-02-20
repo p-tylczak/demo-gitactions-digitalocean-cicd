@@ -32,7 +32,7 @@ jobs:
         run: npm run build
 
       - name: "Check tags"
-        run: git tag
+        run: git tag | cat -n
 
       - name: Create report file
         run: date +%s > report.txt
