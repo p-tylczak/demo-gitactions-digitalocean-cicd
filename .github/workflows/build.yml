@@ -39,5 +39,7 @@ jobs:
 
       - name: Commit report
         run: |
+          git config user.email "github@actions.com"
+          git config user.name "pipeline runner"
           git commit -am "Automated report"
           git push
