@@ -1,7 +1,9 @@
 {
   "name": "digital-ocean-github-actions-ci",
   "scripts": {
-    "dev": "bun run --hot src/index.ts"
+    "dev": "bun run --hot src/index.ts",
+    "test": "echo RUNNING TESTS...",
+    "build": "echo RUNNING BUILD..."
   },
   "dependencies": {
     "hono": "^4.6.1"

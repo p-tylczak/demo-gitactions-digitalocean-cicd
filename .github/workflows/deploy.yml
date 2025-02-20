@@ -3,7 +3,7 @@ name: Deploy to DigitalOcean
 on:
   push:
     branches:
-      - master
+      - nnmaster
 
 jobs:
   deploy:
@@ -17,4 +17,4 @@ jobs:
 
       - name: Deploy to Droplet
         run: |
-          ssh -o StrictHostKeyChecking=no root@167.172.181.149 "/root/digital-ocean-github-actions-ci/scripts/deploy.sh"
+          ssh -o StrictHostKeyChecking=no root@138.197.188.168 "/root/projects/demo-gitactions-digitalocean-cicd/scripts/deploy.sh"
