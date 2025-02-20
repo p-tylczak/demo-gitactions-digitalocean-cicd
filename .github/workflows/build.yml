@@ -37,7 +37,9 @@ jobs:
           git config --global user.name "pipeline runner"
 
       - name: "Tag"
-        run: git tag -a v1.0.0 -m "`date`"
+        run: |
+          git tag -a v1.0.0 -m "`date`"
+          git push --tags
 
       - name: Create report file
         run: date +%s > report.txt
