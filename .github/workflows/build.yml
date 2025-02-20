@@ -31,8 +31,8 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: "Check tags"
-        run: git tag | cat -n
+      - name: "Tag"
+        run: git tag -a v1.0.0 -m "`date`"
 
       - name: Create report file
         run: date +%s > report.txt
