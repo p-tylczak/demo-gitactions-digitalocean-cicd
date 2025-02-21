@@ -31,7 +31,7 @@ jobs:
         with:
           # Repository name with owner. For example, actions/checkout
           # Default: ${{ github.repository }}
-          repository: 'p-tylczak/release_manifest'
+          repository: p-tylczak/release_manifest
           path: release_manifest
 
       - name: Load version manifest
