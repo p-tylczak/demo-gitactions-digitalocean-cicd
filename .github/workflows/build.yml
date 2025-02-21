@@ -26,7 +26,7 @@ jobs:
         with:
           path: app_repo
 
-      - name: Checkout Manifest ${{ secrets.GH_PAT }}
+      - name: Checkout Manifest
         uses: actions/checkout@v4
         with:
           # Repository name with owner. For example, actions/checkout
