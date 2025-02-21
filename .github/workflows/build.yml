@@ -9,6 +9,13 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
 
+    env:
+      APP_MANIFEST_PREFIX: 'demo_cicd'
+
+    defaults:
+      run:
+        working-directory: ./app_repo
+
     strategy:
       matrix:
         node-version: [20.15.X]
@@ -16,6 +23,20 @@ jobs:
     steps:
       - name: Checkout the code
         uses: actions/checkout@v4
+        with:
+          path: app_repo
+
+      - uses: actions/checkout@v4
+        with:
+          # Repository name with owner. For example, actions/checkout
+          # Default: ${{ github.repository }}
+          repository: 'release_manifest'
+          path: release_manifest
+
+      - name: Load version manifest
+        run: |
+          source release_manifest/${{env.APP_MANIFEST_NAME}}.manifest
+          echo $${{env.APP_MANIFEST_NAME}}_PREV_MAJOR
 
       - name: Set up Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
