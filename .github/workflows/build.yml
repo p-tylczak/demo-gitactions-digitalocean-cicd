@@ -21,12 +21,13 @@ jobs:
         node-version: [20.15.X]
 
     steps:
-      - name: Checkout the code
+      - name: Checkout the code :: ${{ github.repository }} ::
         uses: actions/checkout@v4
         with:
           path: app_repo
 
-      - uses: actions/checkout@v4
+      - name: Checkout Manifest
+        uses: actions/checkout@v4
         with:
           # Repository name with owner. For example, actions/checkout
           # Default: ${{ github.repository }}
