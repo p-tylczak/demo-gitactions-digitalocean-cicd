@@ -29,15 +29,13 @@ jobs:
       - name: Checkout Manifest
         uses: actions/checkout@v4
         with:
-          # Repository name with owner. For example, actions/checkout
-          # Default: ${{ github.repository }}
           repository: p-tylczak/release_manifest
           token: ${{ secrets.GH_PAT }}
           path: release_manifest
 
       - name: Load version manifest
         run: |
-          source release_manifest/${{env.APP_MANIFEST_NAME}}.manifest
+          source release_manifest/${{env.APP_MANIFEST_PREFIX}}.manifest
           echo $${{env.APP_MANIFEST_NAME}}_PREV_MAJOR
 
       - name: Set up Node.js ${{ matrix.node-version }}
