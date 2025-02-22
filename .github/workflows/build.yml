@@ -12,6 +12,7 @@ jobs:
     env:
       MANIFEST_REPO_NAME: p-tylczak/release_manifest
       MANIFEST_FILE: demo_cicd.manifest
+      NEXT_VERSION_VALUE: 'to-be-overwritten-by-step'
 
     defaults:
       run:
@@ -44,6 +45,7 @@ jobs:
         run: |
           source ./scripts/setup_version.sh ${{ env.MANIFEST_FILE }} PATCH
           echo "export VERSION=$NEXT_VERSION" >> ${{ env.MANIFEST_FILE }}
+          echo "NEXT_VERSION_VALUE=$NEXT_VERSION" >> $GITHUB_ENV
 
       - name: Append new version to manifest
         working-directory: ./release_manifest
@@ -53,8 +55,7 @@ jobs:
           git push
 
       - name: Confirm the next version
-        working-directory: ./release_manifest
-        run: echo $NEXT_VERSION
+        run: echo ${{ env.NEXT_VERSION_VALUE }}
 
       - name: Set up Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
