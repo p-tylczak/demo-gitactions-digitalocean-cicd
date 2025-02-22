@@ -22,6 +22,11 @@ jobs:
         node-version: [20.15.X]
 
     steps:
+      - name: Configure git
+        run: |
+          git config --global user.email "github@actions.com"
+          git config --global user.name "pipeline runner"
+
       - name: Checkout repo ${{ github.repository }}
         uses: actions/checkout@v4
         with:
@@ -61,11 +66,6 @@ jobs:
 
       - name: Build
         run: npm run build
-
-      - name: Configure git
-        run: |
-          git config --global user.email "github@actions.com"
-          git config --global user.name "pipeline runner"
 
       - name: Commit report
         run: |
