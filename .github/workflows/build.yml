@@ -11,7 +11,7 @@ jobs:
 
     env:
       MANIFEST_REPO_NAME: p-tylczak/release_manifest
-      APP_MANIFEST_PREFIX: demo_cicd
+      MANIFEST_FILE: demo_cicd.manifest
 
     defaults:
       run:
@@ -36,12 +36,12 @@ jobs:
 
       - name: Load versions from manifest
         working-directory: ./release_manifest
-        run: source ./scripts/setup_version.sh ${{env.APP_MANIFEST_PREFIX}} PATCH
+        run: source ./scripts/setup_version.sh ${{env.MANIFEST_FILE}} PATCH
 
       - name: Append new version to manifest
         working-directory: ./release_manifest
         run: |
-          echo export VERSION=$NEXT_VERSION >> $MANIFEST_FILE_NAME
+          echo export VERSION=$NEXT_VERSION >> ${{ env.MANIFEST_FILE }}
           git commit -am "[bot] append version"
           git push
 
