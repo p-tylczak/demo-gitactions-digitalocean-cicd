@@ -10,7 +10,8 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      APP_MANIFEST_PREFIX: 'demo_cicd'
+      MANIFEST_REPO_NAME: p-tylczak/release_manifest
+      APP_MANIFEST_PREFIX: demo_cicd
 
     defaults:
       run:
@@ -21,22 +22,23 @@ jobs:
         node-version: [20.15.X]
 
     steps:
-      - name: Checkout the code ${{ github.repository }}
+      - name: Checkout repo ${{ github.repository }}
         uses: actions/checkout@v4
         with:
           path: app_repo
 
-      - name: Checkout Manifest
+      - name: Checkout repo ${{ env.MANIFEST_REPO_NAME }}
         uses: actions/checkout@v4
         with:
-          repository: p-tylczak/release_manifest
+          repository: ${{ env.MANIFEST_REPO_NAME }}
           token: ${{ secrets.GH_PAT }}
           path: release_manifest
 
       - name: Load version manifest
+        working-directory: ./release_manifest
         run: |
           source release_manifest/${{env.APP_MANIFEST_PREFIX}}.manifest
-          echo $${{env.APP_MANIFEST_NAME}}_PREV_MAJOR
+          echo $${{env.APP_MANIFEST_PREFIX}}_PREV_MAJOR
 
       - name: Set up Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
