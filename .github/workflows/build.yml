@@ -53,6 +53,7 @@ jobs:
           git push
 
       - name: Confirm the next version
+        working-directory: ./release_manifest
         run: echo $NEXT_VERSION
 
       - name: Set up Node.js ${{ matrix.node-version }}
