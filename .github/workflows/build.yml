@@ -41,12 +41,14 @@ jobs:
 
       - name: Load versions from manifest
         working-directory: ./release_manifest
-        run: source ./scripts/setup_version.sh ${{env.MANIFEST_FILE}} PATCH
+        run: |
+          source ./scripts/setup_version.sh ${{ env.MANIFEST_FILE }} PATCH
+          echo "export VERSION=$NEXT_VERSION" >> ${{ env.MANIFEST_FILE }}
 
       - name: Append new version to manifest
         working-directory: ./release_manifest
         run: |
-          echo export VERSION=$NEXT_VERSION >> ${{ env.MANIFEST_FILE }}
+          git diff ${{ env.MANIFEST_FILE }}
           git commit -am "[bot] append version"
           git push
 
