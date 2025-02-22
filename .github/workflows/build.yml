@@ -34,12 +34,9 @@ jobs:
           token: ${{ secrets.GH_PAT }}
           path: release_manifest
 
-      - name: Load version manifest
+      - name: Load versions from manifest
         working-directory: ./release_manifest
-        run: |
-          echo Currently at: `pwd`
-          source ${{env.APP_MANIFEST_PREFIX}}.manifest
-          echo $${{env.APP_MANIFEST_PREFIX}}_PREV_MAJOR
+        run: ./scripts/setup_version.sh ${{env.APP_MANIFEST_PREFIX}}
 
       - name: Set up Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
@@ -59,14 +56,6 @@ jobs:
         run: |
           git config --global user.email "github@actions.com"
           git config --global user.name "pipeline runner"
-
-      - name: "Tag"
-        run: |
-          git tag -a v1.0.0 -m "`date +%FT%T`"
-          git push --tags
-
-      - name: Create report file
-        run: date +%s > report.txt
 
       - name: Commit report
         run: |
