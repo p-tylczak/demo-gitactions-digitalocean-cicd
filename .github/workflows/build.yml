@@ -37,7 +37,8 @@ jobs:
       - name: Load version manifest
         working-directory: ./release_manifest
         run: |
-          source release_manifest/${{env.APP_MANIFEST_PREFIX}}.manifest
+          echo Currently at: `pwd`
+          source ${{env.APP_MANIFEST_PREFIX}}.manifest
           echo $${{env.APP_MANIFEST_PREFIX}}_PREV_MAJOR
 
       - name: Set up Node.js ${{ matrix.node-version }}
