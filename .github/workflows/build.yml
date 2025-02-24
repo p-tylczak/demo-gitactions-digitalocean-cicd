@@ -20,9 +20,9 @@ jobs:
       run:
         working-directory: ./app_repo
 
-    strategy:
-      matrix:
-        environments: [DEV, PROD]
+#    strategy:
+#      matrix:
+#        environments: [DEV, PROD]
 
     steps:
       - name: Checkout repo ${{ github.repository }}
@@ -53,7 +53,7 @@ jobs:
       - name: Append new version to manifest
         working-directory: ./release_manifest
         run: |
-          git commit -am "[bot] append version"
+          git commit -am "[bot] append version ${{ env.NEXT_VERSION_VALUE }}"
           git push
 
       - name: Confirm the next version
@@ -75,7 +75,7 @@ jobs:
 
       - name: Build & push image
         run: |
-          ./scripts/docker-build-image.sh ${{ matrix.environment }} ${{ env.NEXT_VERSION_VALUE }}
+          ./scripts/docker-build-image.sh DEV ${{ env.NEXT_VERSION_VALUE }}
 
       - name: Amend docker compose version
         run: |
