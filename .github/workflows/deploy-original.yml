@@ -1,0 +1,20 @@
+name: Deploy to DigitalOcean
+
+on:
+  push:
+    branches:
+      - nnmaster
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: webfactory/ssh-agent
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.DO_SSH_PRIVATE_KEY }}
+
+      - name: Deploy to Droplet
+        run: |
+          ssh -o StrictHostKeyChecking=no root@138.197.188.168 "/root/projects/demo-gitactions-digitalocean-cicd/scripts/deploy.sh"

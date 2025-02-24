@@ -1,4 +1,4 @@
-name: Build and deploy
+name: Build
 
 on:
   push:
@@ -12,16 +12,17 @@ jobs:
     env:
       MANIFEST_REPO_NAME: p-tylczak/release_manifest
       MANIFEST_FILE: demo_cicd.manifest
+      PREV_VERSION_VALUE: 'to-be-overwritten-by-step'
       NEXT_VERSION_VALUE: 'to-be-overwritten-by-step'
-      NODE_VERSION: 20.15.1
+      NODE_VERSION: 22.14.0
 
     defaults:
       run:
         working-directory: ./app_repo
 
-#    strategy:
-#      matrix:
-#        node-version: [20.15.X]
+    strategy:
+      matrix:
+        environments: [DEV, PROD]
 
     steps:
       - name: Checkout repo ${{ github.repository }}
@@ -46,12 +47,12 @@ jobs:
         run: |
           source ./scripts/setup_version.sh ${{ env.MANIFEST_FILE }} PATCH
           echo "export VERSION=$NEXT_VERSION" >> ${{ env.MANIFEST_FILE }}
+          echo "PREV_VERSION_VALUE=$PREV_VERSION" >> $GITHUB_ENV
           echo "NEXT_VERSION_VALUE=$NEXT_VERSION" >> $GITHUB_ENV
 
       - name: Append new version to manifest
         working-directory: ./release_manifest
         run: |
-          git diff ${{ env.MANIFEST_FILE }}
           git commit -am "[bot] append version"
           git push
 
@@ -69,9 +70,15 @@ jobs:
       - name: Run the tests and generate coverage report
         run: npm run test
 
-      - name: Build
+      - name: Build code
         run: npm run build
 
-      - name: Commit report
+      - name: Build & push image
         run: |
-          echo Commiting report
+          ./scripts/docker-build-image.sh ${{ matrix.environment }} ${{ env.NEXT_VERSION_VALUE }}
+
+      - name: Amend docker compose version
+        run: |
+          sed -i 's/${{ env.PREV_VERSION_VALUE }}/${{ env.NEXT_VERSION_VALUE }}/g' scripts/docker-compose.yaml
+          git commit -am "[bot] bump version from ${{ env.PREV_VERSION_VALUE }} to ${{ env.NEXT_VERSION_VALUE }}"
+          git push
