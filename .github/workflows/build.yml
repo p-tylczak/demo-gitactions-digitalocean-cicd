@@ -75,6 +75,8 @@ jobs:
 
       - name: Build & push image
         run: |
+          DOCKER_PASSWORD=${{ secrets.DOCKER_PASSWORD }}
+          DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
           ./scripts/docker-build-image.sh DEV ${{ env.NEXT_VERSION_VALUE }}
 
       - name: Amend docker compose version
