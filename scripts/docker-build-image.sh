@@ -39,6 +39,8 @@ echo "Building docker image with tag ${IMAGE_VERSION}..."
 echo
 pwd
 
+FULL_IMAGE_NAME=$(echo paweltylczak/demo-ui:$ENVIRONMENT-$IMAGE_VERSION | tr A-Z a-z)
+
 #docker build --no-cache --pull -t ghcr.io/p-tylczak/demo-ui:$IMAGE_VERSION .
-docker build --no-cache --pull -t paweltylczak/demo-ui-$ENVIRONMENT:$IMAGE_VERSION .
-docker push paweltylczak/demo-ui-$ENVIRONMENT:$IMAGE_VERSION
+docker build --no-cache --pull -t $FULL_IMAGE_NAME .
+docker push $FULL_IMAGE_NAME
