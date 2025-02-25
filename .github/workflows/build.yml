@@ -82,6 +82,6 @@ jobs:
 
       - name: Amend docker compose version
         run: |
-          sed -i 's/${{ env.DOCKER_IMAGE_NAME }}:${{ env.PREV_VERSION_VALUE }}/${{ env.DOCKER_IMAGE_NAME}}:${{ env.NEXT_VERSION_VALUE }}/g' scripts/docker-compose.yaml
+          sed -i 's?${{ env.DOCKER_IMAGE_NAME }}:${{ env.PREV_VERSION_VALUE }}?${{ env.DOCKER_IMAGE_NAME}}:${{ env.NEXT_VERSION_VALUE }}?g' scripts/docker-compose.yaml
           git commit -am "[bot] bump version from ${{ env.PREV_VERSION_VALUE }} to ${{ env.NEXT_VERSION_VALUE }}"
           git push
