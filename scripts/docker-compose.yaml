@@ -14,7 +14,7 @@ services:
       - caddy_config:/config
 
   webapp:
-    image: paweltylczak/demo-ui:1.0.0
+    image: paweltylczak/demo-ui:1.0.1
     volumes:
       - '.:/demo-ui'
       - '/demo-ui/node_modules'
