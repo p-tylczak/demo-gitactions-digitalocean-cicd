@@ -76,7 +76,7 @@ jobs:
       - name: Append new version to manifest
         working-directory: ./release_manifest
         run: |
-          echo "export VERSION=$NEXT_VERSION" >> ${{ env.MANIFEST_FILE }}
+          echo "export VERSION=$NEXT_VERSION_VALUE" >> ${{ env.MANIFEST_FILE }}
           git commit -am "[bot] append version ${{ env.NEXT_VERSION_VALUE }}"
           git push
 
