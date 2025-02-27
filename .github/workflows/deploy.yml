@@ -13,11 +13,11 @@ jobs:
       - name: webfactory/ssh-agent
         uses: webfactory/ssh-agent@v0.9.0
         with:
-          ssh-private-key: ${{ secrets.DO_SSH_PRIVATE_KEY }}
+          ssh-private-key: ${{ secrets.DIGITAL_OCEAN_SSH_PRIVATE_KEY }}
 
       - name: Deploy to Droplet via SSH
         run: |
-          ssh -o StrictHostKeyChecking=no root@138.197.188.168 "/root/envs/dev/apps/demo-gitactions-digitalocean-cicd/scripts/deploy.sh"
+          ssh -o StrictHostKeyChecking=no root@138.197.188.168 "/root/dev/demo-gitactions-digitalocean-cicd/scripts/restart.sh"
 
   on-failure:
     runs-on: ubuntu-latest
