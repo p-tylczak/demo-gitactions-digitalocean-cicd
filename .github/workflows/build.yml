@@ -13,7 +13,7 @@ jobs:
       MANIFEST_REPO_NAME: p-tylczak/release_manifest
       MANIFEST_FILE: demo_cicd.manifest
       DOCKER_IMAGE_NAME: paweltylczak/demo-ui
-      ENVIRONMENT: DEV
+      DOCKER_IMAGE_ENV: dev
       PREV_VERSION_VALUE: do-not-update-manually
       NEXT_VERSION_VALUE: do-not-update-manually
       NODE_VERSION: 22.14.0
@@ -83,6 +83,6 @@ jobs:
 
       - name: Amend docker compose version
         run: |
-          sed -i 's?${{ env.DOCKER_IMAGE_NAME }}:${{ env.ENVIRONMENT }}-${{ env.PREV_VERSION_VALUE }}?${{ env.DOCKER_IMAGE_NAME}}:${{ env.ENVIRONMENT }}-${{ env.NEXT_VERSION_VALUE }}?g' docker-compose.yaml
+          sed -i 's?${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_ENV }}-${{ env.PREV_VERSION_VALUE }}?${{ env.DOCKER_IMAGE_NAME}}:${{ env.DOCKER_IMAGE_ENV }}-${{ env.NEXT_VERSION_VALUE }}?g' docker-compose.yaml
           git commit -am "[bot] bump version from ${{ env.PREV_VERSION_VALUE }} to ${{ env.NEXT_VERSION_VALUE }}"
           git push
