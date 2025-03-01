@@ -6,6 +6,6 @@
 #sudo systemctl restart digital-ocean-github-actions-ci
 
 cd /root/dev/demo-gitactions-digitalocean-cicd
-./docker compose down
+docker-compose down
 git pull origin master
-./docker compose up -d
+docker-compose up -d
