@@ -4,7 +4,7 @@ services:
 #    build:
 #      context: .
 #      dockerfile: Dockerfile
-        image: paweltylczak/demo-ui:dev-1.0.1
+        image: paweltylczak/demo-ui:dev-1.0.2
         container_name: demo-container
         ports:
             - "3001:3000"
