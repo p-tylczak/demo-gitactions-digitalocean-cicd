@@ -1,15 +1,9 @@
 services:
     react-app:
-        build: .
-#    build:
-#      context: .
-#      dockerfile: Dockerfile
         image: paweltylczak/demo-ui:dev-1.0.5
         container_name: demo-container
         ports:
             - "3001:3000"
-#    stdin_open: true
-#    tty: true
         environment:
             - NODE_ENV=production
         restart: unless-stopped
