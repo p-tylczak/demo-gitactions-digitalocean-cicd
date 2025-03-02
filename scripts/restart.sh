@@ -8,4 +8,4 @@
 cd /root/dev/demo-gitactions-digitalocean-cicd
 git pull origin master
 docker-compose down
-docker-compose up -d --build
+docker-compose up -d
