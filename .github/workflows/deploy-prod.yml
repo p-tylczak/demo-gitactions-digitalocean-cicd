@@ -2,7 +2,7 @@ name: Deploy to DigitalOcean
 
 on:
   workflow_run:
-    workflows: [Build]
+    workflows: [Build-PROD]
     types: [completed]
 
 jobs:
@@ -11,13 +11,13 @@ jobs:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - name: webfactory/ssh-agent
-        uses: webfactory/ssh-agent@v0.9.0
+        uses: webfa ctory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.DIGITAL_OCEAN_SSH_PRIVATE_KEY }}
 
       - name: Deploy to Droplet via SSH
         run: |
-          ssh -o StrictHostKeyChecking=no root@138.197.188.168 "/root/dev/demo-gitactions-digitalocean-cicd/scripts/restart.sh"
+          ssh -o StrictHostKeyChecking=no root@138.197.188.168 "/root/prod/demo-gitactions-digitalocean-cicd/scripts/restart.sh"
 
   on-failure:
     runs-on: ubuntu-latest

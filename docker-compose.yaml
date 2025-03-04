@@ -1,6 +1,6 @@
 services:
     react-app:
-        image: paweltylczak/demo-ui:dev-1.0.6
+        image: paweltylczak/demo-ui:dev-1.0.0
         container_name: demo-container
         ports:
             - "3001:3000"

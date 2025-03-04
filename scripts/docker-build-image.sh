@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 if [[ ! $# -eq 2 ]] ; then
-    echo 'Usage: $ ./docker-build-image <env:PROD|STAGING|DEV> <tag-version>'
+    echo 'Usage: $ ./docker-build-image <env:prod|staging|dev> <tag-version:e.g. 1.0.0>'
     exit 1
 fi
 
@@ -10,9 +10,9 @@ IMAGE_VERSION=${2}
 
 environmentFile=$(
     case "$ENVIRONMENT" in
-    ("PROD") echo '.env.production' ;; 
-    ("STAGING") echo '.env.staging' ;; 
-    ("DEV") echo '.env.development' ;; 
+    ("prod") echo '.env.production' ;; 
+    ("staging") echo '.env.staging' ;; 
+    ("dev") echo '.env.development' ;; 
     (*) echo "not-found" ;; 
     esac)
 

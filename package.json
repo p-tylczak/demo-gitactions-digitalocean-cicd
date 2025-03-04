@@ -3,7 +3,7 @@
   "scripts": {
     "dev": "bun run --hot src/index.ts",
     "test": "echo RUNNING TESTS...",
-    "build": "mkdir build && echo '<html lang=\"eng\"><h1>TEST TEST BUILD BUILD - UPDATED - 2nd March, Another update</h1></html>' > build/index.html"
+    "build": "mkdir build && echo '<html lang=\"eng\"><h1>TEST TEST BUILD BUILD - 4th March</h1></html>' > build/index.html"
   },
   "dependencies": {
     "hono": "^4.6.1"
