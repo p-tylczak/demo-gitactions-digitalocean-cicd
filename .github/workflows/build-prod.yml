@@ -3,8 +3,8 @@ name: Build-PROD
 on:
   workflow_dispatch:
     inputs:
-      environment:
-        description: 'Deploy to environment'
+      ghEnvironment:
+        description: 'Select GH environment to be source vars, secrets etc'
         type: environment
         required: true
 
@@ -14,10 +14,20 @@ on:
         required: true
         default: 'prod-0.0.0'
 
+      buildEnviornment:
+        description: 'Actual environment for build & deploy'
+        type: choice
+        required: true
+        options:
+          - prod
 
 jobs:
-  build-the-image-and-update-manifest:
+  build:
     runs-on: ubuntu-latest
+
+    environment:
+      name: prod
+      url: https://app.szkolneplatnosci.pl
 
     env:
       MANIFEST_REPO_NAME: p-tylczak/release_manifest

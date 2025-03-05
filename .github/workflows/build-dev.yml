@@ -6,8 +6,12 @@ on:
       - master
 
 jobs:
-  build-the-image-and-update-manifest:
+  build:
     runs-on: ubuntu-latest
+
+    environment:
+      name: dev
+      url: https://dev-app.szkolneplatnosci.pl
 
     env:
       MANIFEST_REPO_NAME: p-tylczak/release_manifest
