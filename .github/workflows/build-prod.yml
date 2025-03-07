@@ -25,15 +25,17 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    # The 'environment' is used in the context of GitHub environments, eg. to source secrets/variables
     environment:
       name: prod
       url: https://app.szkolneplatnosci.pl
 
     env:
-      MANIFEST_REPO_NAME: p-tylczak/release_manifest
-      MANIFEST_FILE: demo_cicd_prod.manifest
-      DOCKER_IMAGE_NAME: paweltylczak/demo-ui
       ENVIRONMENT: prod
+      MANIFEST_REPO_NAME: p-tylczak/release_manifest
+      MANIFEST_FILE: ./apps/demo_cicd/prod/demo_cicd.manifest
+      DOCKER_COMPOSE_FILE: ./apps/demo_cicd/prod/docker-compose.yaml
+      DOCKER_IMAGE_NAME: paweltylczak/demo-ui
       PREV_VERSION_VALUE: do-not-update-manually
       NEXT_VERSION_VALUE: do-not-update-manually
       NODE_VERSION: 22.14.0
@@ -102,7 +104,8 @@ jobs:
           git push
 
       - name: Amend docker compose version
+        working-directory: ./release_manifest
         run: |
-          sed -i 's?${{ env.DOCKER_IMAGE_NAME }}:${{ env.ENVIRONMENT }}-${{ env.PREV_VERSION_VALUE }}?${{ env.DOCKER_IMAGE_NAME}}:${{ env.ENVIRONMENT }}-${{ env.NEXT_VERSION_VALUE }}?g' docker-compose.yaml
+          sed -i 's?${{ env.DOCKER_IMAGE_NAME }}:${{ env.ENVIRONMENT }}-${{ env.PREV_VERSION_VALUE }}?${{ env.DOCKER_IMAGE_NAME}}:${{ env.ENVIRONMENT }}-${{ env.NEXT_VERSION_VALUE }}?g' ${{ env.DOCKER_COMPOSE_FILE }}
           git commit -am "[bot] bump version from ${{ env.PREV_VERSION_VALUE }} to ${{ env.NEXT_VERSION_VALUE }}"
           git push

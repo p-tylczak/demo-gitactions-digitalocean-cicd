@@ -8,10 +8,12 @@ on:
 jobs:
   on-success:
     runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
     environment:
       name: dev
       url: https://dev-app.szkolneplatnosci.pl
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
     steps:
       - name: webfactory/ssh-agent
         uses: webfactory/ssh-agent@v0.9.0
@@ -20,7 +22,7 @@ jobs:
 
       - name: Deploy to Droplet via SSH
         run: |
-          ssh -o StrictHostKeyChecking=no root@138.197.188.168 "/root/dev/demo-gitactions-digitalocean-cicd/scripts/restart.sh"
+          ssh -o StrictHostKeyChecking=no root@138.197.188.168 "/root/release_manifest/scripts/restart.sh demo_cicd dev"
 
   on-failure:
     runs-on: ubuntu-latest
