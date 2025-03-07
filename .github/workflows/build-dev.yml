@@ -88,6 +88,7 @@ jobs:
           git push
 
       - name: Amend docker compose version
+        working-directory: ./release_manifest
         run: |
           sed -i 's?${{ env.DOCKER_IMAGE_NAME }}:${{ env.ENVIRONMENT }}-${{ env.PREV_VERSION_VALUE }}?${{ env.DOCKER_IMAGE_NAME}}:${{ env.ENVIRONMENT }}-${{ env.NEXT_VERSION_VALUE }}?g' ${{ env.DOCKER_COMPOSE_FILE }}
           git commit -am "[bot] bump version from ${{ env.PREV_VERSION_VALUE }} to ${{ env.NEXT_VERSION_VALUE }}"
