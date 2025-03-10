@@ -1,8 +1,8 @@
-name: Deploy to DigitalOcean - DEV
+name: Deploy DEV
 
 on:
   workflow_run:
-    workflows: [Build-Project]
+    workflows: [Build Project]
     types: [completed]
 
 jobs:

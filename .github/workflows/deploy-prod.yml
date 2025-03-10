@@ -1,22 +1,21 @@
-name: Deploy to DigitalOcean - PROD
+name: Deploy PROD
 
 on:
   workflow_dispatch:
     inputs:
       imageCurrentVersion:
-        description: 'Version of the image, e.g. 1.0.1'
+        description: 'Current Version of the image, e.g. 1.0.1'
         required: true
         type: string
 
       imageDeployVersion:
-        description: 'Version of the image, e.g. 1.0.1'
+        description: 'Version of the image to be deployed, e.g. 1.0.2'
         required: true
         type: string
 
 jobs:
-  on-success:
+  deploy:
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
 
     environment:
       name: prod
