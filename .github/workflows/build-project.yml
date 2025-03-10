@@ -87,8 +87,8 @@ jobs:
 
       - name: Build & push image in ALL ENVIRONMENTS
         run: |
-          DOCKER_PASSWORD=${{ secrets.DOCKER_PASSWORD }}
-          DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
+          export DOCKER_PASSWORD=${{ secrets.DOCKER_PASSWORD }}
+          export DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
 
           echo ========================= DEV =========================
           ${{ secrets.ENV_VARS_DEV }} > .env.dev
