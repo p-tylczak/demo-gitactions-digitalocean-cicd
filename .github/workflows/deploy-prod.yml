@@ -4,12 +4,12 @@ on:
   workflow_dispatch:
     inputs:
       imageCurrentVersion:
-        description: 'Current Version of the image, e.g. 1.0.1'
+        description: 'Current Version of the image'
         required: true
         type: string
 
       imageDeployVersion:
-        description: 'Version of the image to be deployed, e.g. 1.0.2'
+        description: 'Version of the image to be deployed'
         required: true
         type: string
 
@@ -39,17 +39,17 @@ jobs:
           git config --global user.email "github@actions.com"
           git config --global user.name "pipeline runner"
 
+      - name: Amend docker compose version
+        working-directory: ./release_manifest
+        run: |
+          sed -i 's?${{ env.DOCKER_IMAGE_NAME }}:prod-${{ inputs.imageCurrentVersion }}?${{ env.DOCKER_IMAGE_NAME }}:prod-${{ inputs.imageDeployVersion }}?g' ${{ env.DOCKER_COMPOSE_FILE }}
+          git commit -am "[bot] bump version from ${{ inputs.imageCurrentVersion }} to ${{ inputs.imageDeployVersion }}"
+          git push
+
       - name: webfactory/ssh-agent
         uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.DIGITAL_OCEAN_SSH_PRIVATE_KEY }}
-
-      - name: Amend docker compose version
-        working-directory: ./release_manifest
-        run: |
-          sed -i 's?${{ env.DOCKER_IMAGE_NAME }}:prod-${{ inputs.imageCurrentVersion }}?${{ env.DOCKER_IMAGE_NAME}}:prod-${{ env.imageDeployVersion }}?g' ${{ env.DOCKER_COMPOSE_FILE }}
-          git commit -am "[bot] bump version from ${{ inputs.imageCurrentVersion }} to ${{ inputs.imageDeployVersion }}"
-          git push
 
       - name: Deploy to Droplet via SSH
         run: |
