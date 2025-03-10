@@ -90,18 +90,14 @@ jobs:
           export DOCKER_PASSWORD=${{ secrets.DOCKER_PASSWORD }}
           export DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
 
-          echo ========================= DEV =========================
+          echo ==== DEV ==============================================
           ${{ secrets.ENV_VARS_DEV }} > .env.dev
-          cat .env.dev
           source .env.dev
-          echo $BUILD_ENVIRONMENT
           ./scripts/docker-build-image.sh dev ${{ env.NEXT_VERSION_VALUE }}
 
-          echo ========================= PROD =========================
+          echo ==== PROD ==============================================
           ${{ secrets.ENV_VARS_PROD }} > .env.prod
-          cat .env.prod
           source .env.prod
-          echo $BUILD_ENVIRONMENT
           ./scripts/docker-build-image.sh prod ${{ env.NEXT_VERSION_VALUE }}
 
       - name: Append new version to manifest
