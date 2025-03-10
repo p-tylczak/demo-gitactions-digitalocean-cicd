@@ -1,9 +1,17 @@
 name: Deploy to DigitalOcean - PROD
 
 on:
-  workflow_run:
-    workflows: [Build-PROD]
-    types: [completed]
+  workflow_dispatch:
+    inputs:
+      imageCurrentVersion:
+        description: 'Version of the image, e.g. 1.0.1'
+        required: true
+        type: string
+
+      imageDeployVersion:
+        description: 'Version of the image, e.g. 1.0.1'
+        required: true
+        type: string
 
 jobs:
   on-success:
@@ -11,21 +19,39 @@ jobs:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
 
     environment:
-      name: dev
-      url: https://dev-app.szkolneplatnosci.pl
+      name: prod
+      url: https://app.szkolneplatnosci.pl
+
+    env:
+      MANIFEST_REPO_NAME: p-tylczak/release_manifest
+      DOCKER_COMPOSE_FILE: ./apps/demo_cicd/prod/docker-compose.yaml
+      DOCKER_IMAGE_NAME: paweltylczak/demo-ui
 
     steps:
+      - name: Checkout repo ${{ env.MANIFEST_REPO_NAME }}
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.MANIFEST_REPO_NAME }}
+          token: ${{ secrets.GH_PAT }}
+          path: release_manifest
+
+      - name: Configure git
+        run: |
+          git config --global user.email "github@actions.com"
+          git config --global user.name "pipeline runner"
+
       - name: webfactory/ssh-agent
         uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.DIGITAL_OCEAN_SSH_PRIVATE_KEY }}
 
+      - name: Amend docker compose version
+        working-directory: ./release_manifest
+        run: |
+          sed -i 's?${{ env.DOCKER_IMAGE_NAME }}:prod-${{ inputs.imageCurrentVersion }}?${{ env.DOCKER_IMAGE_NAME}}:prod-${{ env.imageDeployVersion }}?g' ${{ env.DOCKER_COMPOSE_FILE }}
+          git commit -am "[bot] bump version from ${{ inputs.imageCurrentVersion }} to ${{ inputs.imageDeployVersion }}"
+          git push
+
       - name: Deploy to Droplet via SSH
         run: |
           ssh -o StrictHostKeyChecking=no root@138.197.188.168 "/root/release_manifest/scripts/restart.sh demo_cicd prod"
-
-  on-failure:
-    runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
-    steps:
-      - run: echo 'The triggering workflow failed'

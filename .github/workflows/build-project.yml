@@ -1,9 +1,21 @@
-name: Build-DEV
+name: Build-Project
 
 on:
   push:
     branches:
       - master
+
+  workflow_dispatch:
+    inputs:
+      upgradeType:
+        description: 'Select upgrade type'
+        required: true
+        type: choice
+        default: PATCH
+        options:
+          - PATCH
+          - MINOR
+          - MAJOR
 
 jobs:
   build:
@@ -11,11 +23,10 @@ jobs:
 
     # The 'environment' is used in the context of GitHub environments, eg. to source secrets/variables
     environment:
-      name: dev
+      name: build_env
       url: https://dev-app.szkolneplatnosci.pl
 
     env:
-      ENVIRONMENT: dev
       MANIFEST_REPO_NAME: p-tylczak/release_manifest
       MANIFEST_FILE: ./apps/demo_cicd/dev/demo_cicd.manifest
       DOCKER_COMPOSE_FILE: ./apps/demo_cicd/dev/docker-compose.yaml
@@ -67,18 +78,31 @@ jobs:
       - name: Load versions from manifest
         working-directory: ./release_manifest
         run: |
-          source ./scripts/setup_version.sh ${{ env.MANIFEST_FILE }} PATCH
+          source ./scripts/setup_version.sh ${{ env.MANIFEST_FILE }} ${{ inputs.upgradeType || 'PATCH' }}
           echo "PREV_VERSION_VALUE=$PREV_VERSION" >> $GITHUB_ENV
           echo "NEXT_VERSION_VALUE=$NEXT_VERSION" >> $GITHUB_ENV
 
       - name: Echo the next version
         run: echo ${{ env.NEXT_VERSION_VALUE }}
 
-      - name: Build & push image
+      - name: Build & push image in ALL ENVIRONMENTS
         run: |
-          export DOCKER_PASSWORD=${{ secrets.DOCKER_PASSWORD }}
-          export DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
-          ./scripts/docker-build-image.sh ${{ env.ENVIRONMENT }} ${{ env.NEXT_VERSION_VALUE }}
+          DOCKER_PASSWORD=${{ secrets.DOCKER_PASSWORD }}
+          DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
+
+          echo ========================= DEV =========================
+          ${{ secrets.ENV_VARS_DEV }} > .env.dev
+          cat .env.dev
+          source .env.dev
+          echo $BUILD_ENVIRONMENT
+          ./scripts/docker-build-image.sh dev ${{ env.NEXT_VERSION_VALUE }}
+
+          echo ========================= PROD =========================
+          ${{ secrets.ENV_VARS_PROD }} > .env.prod
+          cat .env.prod
+          source .env.prod
+          echo $BUILD_ENVIRONMENT
+          ./scripts/docker-build-image.sh prod ${{ env.NEXT_VERSION_VALUE }}
 
       - name: Append new version to manifest
         working-directory: ./release_manifest
@@ -90,6 +114,6 @@ jobs:
       - name: Amend docker compose version
         working-directory: ./release_manifest
         run: |
-          sed -i 's?${{ env.DOCKER_IMAGE_NAME }}:${{ env.ENVIRONMENT }}-${{ env.PREV_VERSION_VALUE }}?${{ env.DOCKER_IMAGE_NAME}}:${{ env.ENVIRONMENT }}-${{ env.NEXT_VERSION_VALUE }}?g' ${{ env.DOCKER_COMPOSE_FILE }}
+          sed -i 's?${{ env.DOCKER_IMAGE_NAME }}:dev-${{ env.PREV_VERSION_VALUE }}?${{ env.DOCKER_IMAGE_NAME}}:dev-${{ env.NEXT_VERSION_VALUE }}?g' ${{ env.DOCKER_COMPOSE_FILE }}
           git commit -am "[bot] bump version from ${{ env.PREV_VERSION_VALUE }} to ${{ env.NEXT_VERSION_VALUE }}"
           git push

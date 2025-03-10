@@ -10,9 +10,9 @@ IMAGE_VERSION=${2}
 
 environmentFile=$(
     case "$ENVIRONMENT" in
-    ("prod") echo '.env.production' ;; 
+    ("prod") echo '.env.prod' ;; 
     ("staging") echo '.env.staging' ;; 
-    ("dev") echo '.env.development' ;; 
+    ("dev") echo '.env.dev' ;; 
     (*) echo "not-found" ;; 
     esac)
 

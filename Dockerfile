@@ -13,9 +13,6 @@ RUN npm install
 # Copy the rest of the application
 COPY . ./app
 
-ARG REACT_APP_PAWEL
-ENV REACT_APP_PAWEL $PAW
-
 # Build the React application
 RUN npm run build
 
