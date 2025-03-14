@@ -22,25 +22,25 @@ jobs:
       url: https://app.szkolneplatnosci.pl
 
     env:
-      MANIFEST_REPO_NAME: p-tylczak/release_manifest
+      RELEASE_DEFINITION_REPO_NAME: p-tylczak/release_definitions
       DOCKER_COMPOSE_FILE: ./apps/demo_cicd/prod/docker-compose.yaml
       DOCKER_IMAGE_NAME: paweltylczak/demo-ui
 
     steps:
-      - name: Checkout repo ${{ env.MANIFEST_REPO_NAME }}
+      - name: Checkout repo ${{ env.RELEASE_DEFINITION_REPO_NAME }}
         uses: actions/checkout@v4
         with:
-          repository: ${{ env.MANIFEST_REPO_NAME }}
+          repository: ${{ env.RELEASE_DEFINITION_REPO_NAME }}
           token: ${{ secrets.GH_PAT }}
-          path: release_manifest
+          path: release_definitions
 
       - name: Configure git
         run: |
           git config --global user.email "github@actions.com"
           git config --global user.name "pipeline runner"
 
-      - name: Amend docker compose version
-        working-directory: ./release_manifest
+      - name: Amend docker compose image version
+        working-directory: ./release_definitions
         run: |
           sed -i 's?${{ env.DOCKER_IMAGE_NAME }}:prod-${{ inputs.imageCurrentVersion }}?${{ env.DOCKER_IMAGE_NAME }}:prod-${{ inputs.imageDeployVersion }}?g' ${{ env.DOCKER_COMPOSE_FILE }}
           git commit -am "[bot] bump version from ${{ inputs.imageCurrentVersion }} to ${{ inputs.imageDeployVersion }}"
@@ -53,4 +53,4 @@ jobs:
 
       - name: Deploy to Droplet via SSH
         run: |
-          ssh -o StrictHostKeyChecking=no root@138.197.188.168 "/root/release_manifest/scripts/restart.sh demo_cicd prod"
+          ssh -o StrictHostKeyChecking=no root@138.197.188.168 "/root/release_definitions/scripts/restart.sh demo_cicd prod"

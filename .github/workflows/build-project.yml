@@ -27,8 +27,8 @@ jobs:
       url: https://dev-app.szkolneplatnosci.pl
 
     env:
-      MANIFEST_REPO_NAME: p-tylczak/release_manifest
-      MANIFEST_FILE: ./apps/demo_cicd/dev/demo_cicd.manifest
+      RELEASE_DEFINITION_REPO_NAME: p-tylczak/release_definitions
+      VERSION_FILE_PATH: ./apps/demo_cicd/dev/demo_cicd.version
       DOCKER_COMPOSE_FILE: ./apps/demo_cicd/dev/docker-compose.yaml
       DOCKER_IMAGE_NAME: paweltylczak/demo-ui
       PREV_VERSION_VALUE: do-not-update-manually
@@ -49,12 +49,12 @@ jobs:
         with:
           path: app_repo
 
-      - name: Checkout repo ${{ env.MANIFEST_REPO_NAME }}
+      - name: Checkout repo ${{ env.RELEASE_DEFINITION_REPO_NAME }}
         uses: actions/checkout@v4
         with:
-          repository: ${{ env.MANIFEST_REPO_NAME }}
+          repository: ${{ env.RELEASE_DEFINITION_REPO_NAME }}
           token: ${{ secrets.GH_PAT }}
-          path: release_manifest
+          path: release_definitions
 
       - name: Configure git
         run: |
@@ -75,10 +75,10 @@ jobs:
       - name: Build code
         run: npm run build
 
-      - name: Load versions from manifest
-        working-directory: ./release_manifest
+      - name: Load versions from version file
+        working-directory: ./release_definitions
         run: |
-          source ./scripts/setup_version.sh ${{ env.MANIFEST_FILE }} ${{ inputs.upgradeType || 'PATCH' }}
+          source ./scripts/setup_version.sh ${{ env.VERSION_FILE_PATH }} ${{ inputs.upgradeType || 'PATCH' }}
           echo "PREV_VERSION_VALUE=$PREV_VERSION" >> $GITHUB_ENV
           echo "NEXT_VERSION_VALUE=$NEXT_VERSION" >> $GITHUB_ENV
 
@@ -100,15 +100,15 @@ jobs:
           source .env.prod
           ./scripts/docker-build-image.sh prod ${{ env.NEXT_VERSION_VALUE }}
 
-      - name: Append new version to manifest
-        working-directory: ./release_manifest
+      - name: Append new version to version file
+        working-directory: ./release_definitions
         run: |
-          echo "export VERSION=$NEXT_VERSION_VALUE" >> ${{ env.MANIFEST_FILE }}
+          echo "export VERSION=$NEXT_VERSION_VALUE" >> ${{ env.VERSION_FILE_PATH }}
           git commit -am "[bot] append version ${{ env.NEXT_VERSION_VALUE }}"
           git push
 
-      - name: Amend docker compose version
-        working-directory: ./release_manifest
+      - name: Amend docker compose image version
+        working-directory: ./release_definitions
         run: |
           sed -i 's?${{ env.DOCKER_IMAGE_NAME }}:dev-${{ env.PREV_VERSION_VALUE }}?${{ env.DOCKER_IMAGE_NAME}}:dev-${{ env.NEXT_VERSION_VALUE }}?g' ${{ env.DOCKER_COMPOSE_FILE }}
           git commit -am "[bot] bump version from ${{ env.PREV_VERSION_VALUE }} to ${{ env.NEXT_VERSION_VALUE }}"

@@ -22,7 +22,7 @@ jobs:
 
       - name: Deploy to Droplet via SSH
         run: |
-          ssh -o StrictHostKeyChecking=no root@138.197.188.168 "/root/release_manifest/scripts/restart.sh demo_cicd dev"
+          ssh -o StrictHostKeyChecking=no root@138.197.188.168 "/root/release_definitions/scripts/restart.sh demo_cicd dev"
 
   on-failure:
     runs-on: ubuntu-latest
